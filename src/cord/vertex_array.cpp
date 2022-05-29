@@ -13,7 +13,8 @@ unsigned int cord::getGLDataType(DataType type) {
     return 0;
 }
 
-VertexArray::VertexArray() {}
+VertexArray::VertexArray()
+    : cIdx(0) {}
 
 VertexArray* VertexArray::create() {
     auto va = new VertexArray();
@@ -23,6 +24,52 @@ VertexArray* VertexArray::create() {
     return va;
 }
 
+VertexArray* VertexArray::from3DVertices(const float* vertices, unsigned int size) {
+    auto va = VertexArray::create();
+
+    VertexBuffer vb((char*)vertices, size);
+
+    va->attrib(&vb, 0, 3, DataType::Float, 3 * sizeof(float), 0);
+    return va;
+}
+
+VertexArray* VertexArray::from3DVertices(const std::vector<float> vertices) {
+    return VertexArray::from3DVertices(vertices.data(), vertices.size() * sizeof(float));
+}
+
+VertexArray* VertexArray::from3DVertices(const std::vector<glm::vec3> vertices) {
+    return VertexArray::from3DVertices((float*)vertices.data(), vertices.size() * sizeof(glm::vec3));
+}
+
+VertexArray* VertexArray::addTexCoords(const float* texCoords, unsigned int size) {
+    VertexBuffer vb((char*)texCoords, size);
+
+    attrib(&vb, 2, 2, DataType::Float, 2 * sizeof(float), 0);
+    return this;
+}
+
+VertexArray* VertexArray::addTexCoords(const std::vector<float> vertices) {
+    return VertexArray::addTexCoords((float*)vertices.data(), vertices.size() * sizeof(float));
+}
+
+VertexArray* VertexArray::addTexCoords(const std::vector<glm::vec2> vertices) {
+    return VertexArray::addTexCoords((float*)vertices.data(), vertices.size() * sizeof(glm::vec2));
+}
+
+VertexArray* VertexArray::addNormals(const float* normals, unsigned int size) {
+    VertexBuffer vb((char*)normals, size);
+
+    attrib(&vb, 1, 3, DataType::Float, 3 * sizeof(float), 0);
+    return this;
+}
+
+VertexArray* VertexArray::addNormals(const std::vector<float> vertices) {
+    return VertexArray::addNormals((float*)vertices.data(), vertices.size() * sizeof(float));
+}
+
+VertexArray* VertexArray::addNormals(const std::vector<glm::vec3> vertices) {
+    return VertexArray::addNormals((float*)vertices.data(), vertices.size() * sizeof(glm::vec3));
+}
 
 void VertexArray::attrib(
     VertexBuffer* vb,
